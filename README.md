@@ -8,11 +8,10 @@
 
 `pnpx prisma init`
 
-add URL
+.env
 
 ```JavaScript
-    .env
-    DATABASE_URL = 'postgresql://localhost...'
+DATABASE_URL = 'postgresql://localhost...'
 ```
 
 once schemas are made...
@@ -20,69 +19,76 @@ once schemas are made...
 `prisma migrate dev --name init`
 
 to re-migrate later
+
 `pnpx migrate dev`
 
 add client
+
 `pnpm add @prisma/client`
 
-to manually re-generated your client
+to manually re-generate your client
+
 `pnpx prisma generate`
 
 ---
 
 _one to many relationship_
 
-The userId field in Post, references the id field in User
+`userId` in Post references `id` in User
 
 ```JavaScript
-    User {
-        posts Post[]
-    }
-    Post {
-        author User @relation(fields: [userId], references: [id])
-    }
+User {
+    id Int
+    posts Post[]
+}
+Post {
+    author User @relation(fields: [userId], references: [id])
+    userId Int
+}
 ```
 
 _one-to-many relationship_
 
-Add id (e.g. "WrittenPosts") for two or more references to the same table
+(e.g. "WrittenPosts") for two or more references to same table
 
 ```JavaScript
-    User {
-        writtenPosts Post[] @relation("WrittenPosts")
-        favoritePosts Post[] @relation("FavoritePosts")
-    }
+User {
+    id Int
+    writtenPosts Post[] @relation("WrittenPosts")
+    favoritePosts Post[] @relation("FavoritePosts")
+}
 
-    Post {
-        author User @relation("WrittenPosts", fields: [authorId], references: [id])
-        authorId String
-        favoritedBy User? @relation("FavoritePosts", fields: [favoriteById], references: [id])
-        favoritedById String?
-    }
+Post {
+    author User @relation("WrittenPosts", fields: [authorId], references: [id])
+    authorId String
+    favoritedBy User? @relation("FavoritePosts", fields: [favoriteById], references: [id])
+    favoritedById String?
+}
 ```
 
 _many-to-many relationship_
 
 ```JavaScript
-    Post {
-        categories Category[]
-    }
-    Category {
-        posts Post[]
-    }
+Post {
+    categories Category[]
+}
+Category {
+    posts Post[]
+}
 ```
 
 _one-to-one relationship_
 
 ```JavaScript
-    User {
-        preference Preference?
-    }
+User {
+    id String
+    preference Preference?
+}
 
-    Preference {
-        user User @relation(fields: [userId], references: [id])
-        userId String @unique
-    }
+Preference {
+    user User @relation(fields: [userId], references: [id])
+    userId String @unique
+}
 ```
 
 _where queries_
@@ -94,13 +100,27 @@ in: ["Sally", "James"]
 notIn: ["Sally", "James"]
 
 `lt`
-lt: age: {lt: 20}
+age: {lt: 20}
 
 `gt`
-gt: age: {gt: 20}
+age: {gt: 20}
 
 `contains`
 email: {contains: "@"}
 
 `startsWith`
 name: {startsWith: "Ja"}
+
+_methods_
+
+`findMany`
+
+`findUnique`
+
+`create`
+
+`update`
+
+`delete`
+
+`deleteMany`
